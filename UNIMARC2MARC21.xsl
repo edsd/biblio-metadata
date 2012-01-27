@@ -1,9 +1,7 @@
 <xsl:stylesheet version="1.0"
-                exclude-result-prefixes="msxml js"
                 xmlns="http://www.loc.gov/MARC21/slim"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:msxml="urn:schemas-microsoft-com:xslt"
-                xmlns:js="javascript:code"
                 >
   <xsl:output encoding="UTF-8" indent="yes" method="xml"/>
   <xsl:strip-space elements="*"/>
@@ -115,12 +113,12 @@
 
   <xsl:template name="transform-leader">
     <xsl:variable name="leader" select="leader"/>
-    <xsl:variable name="leader05" select="translate(js:part($leader,05,05), 'o', 'c')"/>
-    <xsl:variable name="leader06" select="translate(js:part($leader,06,06), 'hmn', 'aor')"/>
-    <xsl:variable name="leader07" select="js:part($leader,07,07)"/>
+    <xsl:variable name="leader05" select="translate(substring($leader,06,1), 'o', 'c')"/>
+    <xsl:variable name="leader06" select="translate(substring($leader,07,1), 'hmn', 'aor')"/>
+    <xsl:variable name="leader07" select="substring($leader,08,1)"/>
     <xsl:variable name="leader08-16" select="'  22     '"/>
-    <xsl:variable name="leader17" select="translate(js:part($leader,17,17), '23', '87')"/>
-    <xsl:variable name="leader18" select="translate(js:part($leader,18,18), ' n', 'i ')"/>
+    <xsl:variable name="leader17" select="translate(substring($leader,18,1), '23', '87')"/>
+    <xsl:variable name="leader18" select="translate(substring($leader,19,1), ' n', 'i ')"/>
     <xsl:variable name="leader19-23" select="' 4500'"/>
     <leader>
       <xsl:value-of select="concat('     ', $leader05, $leader06, $leader07, $leader08-16, $leader17, $leader18, $leader19-23)"/>
@@ -136,17 +134,17 @@
   </xsl:template>
   <xsl:template name="transform-100">
     <xsl:variable name="source" select="datafield[@tag='100']/subfield[@code='a']"/>
-    <xsl:variable name="dest00-05" select="js:part($source,02,07)"/>
-    <xsl:variable name="dest06" select="translate(js:part($source,08,08), 'abcdefghij', 'cdusrqmtpe')"/>
-    <xsl:variable name="dest07-14" select="js:part($source,09,16)"/>
+    <xsl:variable name="dest00-05" select="substring($source,03,6)"/>
+    <xsl:variable name="dest06" select="translate(substring($source,09,1), 'abcdefghij', 'cdusrqmtpe')"/>
+    <xsl:variable name="dest07-14" select="substring($source,10,8)"/>
     <xsl:variable name="dest15-21" select="'       '"/>
-    <xsl:variable name="dest22" select="translate(js:part($source,17,17), 'bcadekmu', 'abjcdeg ')"/>
+    <xsl:variable name="dest22" select="translate(substring($source,18,1), 'bcadekmu', 'abjcdeg ')"/>
     <xsl:variable name="dest23-27" select="'     '"/>
-    <xsl:variable name="dest28" select="translate(js:part($source,20,20), 'abcdefghy', 'fsllcizo ')"/>
+    <xsl:variable name="dest28" select="translate(substring($source,21,1), 'abcdefghy', 'fsllcizo ')"/>
     <xsl:variable name="dest29-32" select="'    '"/>
-    <xsl:variable name="dest33" select="js:part($source,34,34)"/>
+    <xsl:variable name="dest33" select="substring($source,35,1)"/>
     <xsl:variable name="dest34-37" select="'    '"/>
-    <xsl:variable name="dest38" select="translate(js:part($source,21,21), '01', ' o')"/>
+    <xsl:variable name="dest38" select="translate(substring($source,22,1), '01', ' o')"/>
     <xsl:variable name="dest39-40" select="'  '"/>
     <controlfield tag="008">
       <xsl:value-of select="concat($dest00-05, $dest06, $dest07-14, $dest15-21, $dest22, $dest23-27, $dest28, $dest29-32, $dest33, $dest34-37, $dest38, $dest39-40)"/>
@@ -201,10 +199,4 @@
   </xsl:template>
 
   <xsl:variable name="all-codes">abcdefghijklmnopqrstuvwxyz123456789</xsl:variable>
-  <msxml:script implements-prefix="js">
-    function part(source : String, from : int, to : int)
-    {
-      return source.substring(from, to + 1);
-    }
-  </msxml:script>
 </xsl:stylesheet>
